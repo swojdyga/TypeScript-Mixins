@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "lib": [
+            "es2015"
+        ],
+        "declaration": true,
+        "strictNullChecks": true
+    },
+    "include": [
+        "src/index.ts"
+    ]
+}
