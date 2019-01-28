@@ -14,20 +14,55 @@ export default class Use {
         const mixin = new mixinConstructor();
         mixin.super = constructor.prototype;
 
-        // mixin powinien wejść przed główną klasę
-        const extendedConstructor = class extends constructor {
-            constructor(...args: any[]) {
-                super(args);
+        /**
+         * 
+         * constructor.prototype
+         * 
+         * constructor.prototype.prototype
+         * 
+         */
 
-                mixin.owner = this.constructor.prototype;
-            }
-        };
+
+        // const a = constructor.prototype.constructor.prototype;
+        // constructor.prototype.constructor.prototype.constructor.prototype = a;
+        // constructor.prototype.constructor.prototype = {};
+// console.log(constructor.prototype);
+
+
+
+            
+        // mixin powinien wejść przed główną klasę
+        let extendedConstructor;
+        // if(constructor === constructor.prototype.constructor) {
+            extendedConstructor = class {
+                constructor(...args: any[]) {
+                    (mixin as any).owner = this;
+                }
+            };
+        // } else {
+        //     extendedConstructor = class extends constructor.prototype.constructor {
+        //         constructor(...args: any[]) {
+        //             super(args);
+
+        //             (mixin as any).owner = this;
+        //         }
+        //     };
+        // }
+
+        // Object.defineProperties(extendedConstructor.prototype.constructor.prototype, constructor.prototype);
+        // extendedConstructor.prototype = constructor.prototype;
 
         for(const methodToRewrite of this.rewritesCollection.getByKey(mixinConstructor.prototype)) {
             extendedConstructor.prototype[methodToRewrite] = mixin[methodToRewrite].bind(mixin);
         }
 
-        return extendedConstructor as T & Class<Requirements>;
+        const a = class extends extendedConstructor {
+
+        };
+
+        Object.defineProperties(a.prototype, constructor.prototype);
+
+        return a as T & Class<Requirements>;
     }
 
     public rewrite<Rewrites, T extends MixinI<Rewrites>>(target: T, property: keyof Rewrites & string): void {
