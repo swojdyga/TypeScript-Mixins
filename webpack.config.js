@@ -1,5 +1,6 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
+const { TSDeclerationsPlugin } = require('ts-loader-decleration');
 
 module.exports = (env, argv) => {
     const isProduction = argv.mode == 'production';
@@ -39,8 +40,6 @@ module.exports = (env, argv) => {
                             loader: 'ts-loader',
                             options: {
                                 compilerOptions: {
-                                    module: "amd",
-                                    outFile: "./build/index.js"
                                 }
                             }
                         }
@@ -48,6 +47,10 @@ module.exports = (env, argv) => {
                 }
             ]
         },
-        externals: [nodeExternals()]
+        externals: [
+            nodeExternals(),
+        ],
+        plugins: [
+        ]
     };
 };

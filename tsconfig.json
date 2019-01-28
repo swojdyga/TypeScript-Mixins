@@ -1,13 +1,15 @@
 {
     "compilerOptions": {
         "module": "commonjs",
+        "target": "es2015",
         "lib": [
             "es2015"
         ],
-        "declaration": true,
-        "strictNullChecks": true
+        "strictNullChecks": true,
+        "experimentalDecorators": true
     },
     "include": [
         "src/index.ts"
-    ]
+    ],
+    "outDir": "build"
 }

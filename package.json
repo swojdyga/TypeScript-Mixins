@@ -6,6 +6,7 @@
   "types": "./build/index.d.ts",
   "scripts": {
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
+    "dev": "webpack --mode=development",
     "build": "(webpack --mode=production && npm run test) || rimraf -r build/index.js && rimraf -r build index.d.ts"
   },
   "author": "Sebastian Wojdyga",

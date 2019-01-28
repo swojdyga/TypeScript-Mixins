@@ -19,7 +19,14 @@
         ],
         "ordered-imports": false,
         "interface-name": [true, "never-prefix"],
-        "ban-types": false
+        "ban-types": false,
+        "no-bitwise": false,
+        "max-classes-per-file": [true, 1, "exclude-class-expressions"]
     },
-    "rulesDirectory": []
+    "rulesDirectory": [],
+    "linterOptions": {
+        "exclude": [
+            "src/*.spec.ts"
+        ]
+    }
 }
