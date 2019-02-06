@@ -10,8 +10,7 @@ describe(`TypeScript Mixins`, () => {
 
         class MainMixin implements Mixin<MixinRewrites>, MixinRewrites {
             public rewrites!: MixinRewrites;
-            public owner!: {};
-            public super!: {};
+            public owner!: {} & MixinRewrites;
 
             @Rewrite()
             public mainMethod(): string {
@@ -28,7 +27,7 @@ describe(`TypeScript Mixins`, () => {
         expect(result).to.be.equals(`Hello World!`);
     });
 
-    it(`Should have mixin access to main class methods.`, () => {
+    it(`Should have access mixin to main class methods.`, () => {
         interface MixinOwnerRequirements {
             ownerMethod(): string;
         }
@@ -39,8 +38,7 @@ describe(`TypeScript Mixins`, () => {
 
         class MainMixin implements Mixin<MixinOwnerRewrites, MixinOwnerRequirements>, MixinOwnerRewrites {
             public rewrites!: MixinOwnerRewrites;
-            public owner!: MixinOwnerRequirements;
-            public super!: MixinOwnerRequirements;
+            public owner!: MixinOwnerRequirements & MixinOwnerRewrites;
 
             @Rewrite()
             public mixinMethod(): string {
@@ -59,30 +57,25 @@ describe(`TypeScript Mixins`, () => {
         expect(result).to.be.equals(`Hello World!`);
     });
     
-    it(`Should have mixin access to main class methods, which will be overwritten by that mixin.`, () => {
-        interface MixinOwnerRequirements {
-            someMethod(): string;
-        }
-
+    it(`Should be able to overwrite method in main class, which was added by mixin.`, () => {
         interface MixinOwnerRewrites {
             someMethod(): string;
         }
 
-        class MainMixin implements Mixin<MixinOwnerRewrites, MixinOwnerRequirements>, MixinOwnerRewrites {
+        class MainMixin implements Mixin<MixinOwnerRewrites>, MixinOwnerRewrites {
             public rewrites!: MixinOwnerRewrites;
-            public owner!: MixinOwnerRequirements;
-            public super!: MixinOwnerRequirements;
+            public owner!: {} & MixinOwnerRewrites;
 
             @Rewrite()
             public someMethod(): string {
-                return `${this.super.someMethod()} World!`;
+                return `Hello`;
             }
         }
 
         @Use(MainMixin)
         class MainClass extends Extend<MainMixin>() {
             public someMethod(): string {
-                return `Hello`;
+                return `${super.someMethod()} World!`;
             }
         }
 
@@ -97,8 +90,7 @@ describe(`TypeScript Mixins`, () => {
 
         class MainMixin implements Mixin<MixinOwnerRewrites>, MixinOwnerRewrites {
             public rewrites!: MixinOwnerRewrites;
-            public owner!: {};
-            public super!: {};
+            public owner!: {} & MixinOwnerRewrites;
 
             @Rewrite()
             public mainMethod(): string {
@@ -121,7 +113,7 @@ describe(`TypeScript Mixins`, () => {
         expect(result).to.be.equals(`Hello World!`);
     });
 
-    it(`Should mixin get method from child class, when than method was overwritten and mixin was use in super class.`, () => {
+    it(`Should have access mixin to method from child class, when than method was overwritten and mixin was use in super class.`, () => {
         interface MixinOwnerRewrites {
             mainMethod(): string;
         }
@@ -132,8 +124,7 @@ describe(`TypeScript Mixins`, () => {
 
         class MainMixin implements Mixin<MixinOwnerRewrites, MixinOwnerRequirements>, MixinOwnerRewrites {
             public rewrites!: MixinOwnerRewrites;
-            public owner!: MixinOwnerRequirements;
-            public super!: MixinOwnerRequirements;
+            public owner!: MixinOwnerRequirements & MixinOwnerRewrites;
 
             @Rewrite()
             public mainMethod(): string {
@@ -158,15 +149,14 @@ describe(`TypeScript Mixins`, () => {
         expect(result).to.be.equals(`Hello World!`);
     });
 
-    it(``, () => {
+    it(`Should have access mixin to method from main class, which was rewrite from another mixin.`, () => {
         interface MainMixinRewrites {
             mainMethod(): string;
         }
 
         class MainMixin implements Mixin<MainMixinRewrites>, MainMixinRewrites {
             public rewrites!: MainMixinRewrites;
-            public owner!: {};
-            public super!: {};
+            public owner!: {} & MainMixinRewrites;
 
             @Rewrite()
             public mainMethod(): string {
@@ -184,8 +174,7 @@ describe(`TypeScript Mixins`, () => {
 
         class SecondMixin implements Mixin<SecondMixinRewrites, SecondMixinRequirements>, SecondMixinRewrites {
             public rewrites!: SecondMixinRewrites;
-            public owner!: SecondMixinRequirements;
-            public super!: SecondMixinRequirements;
+            public owner!: SecondMixinRequirements & SecondMixinRewrites;
 
             @Rewrite()
             public secondMethod(): string {
@@ -203,7 +192,63 @@ describe(`TypeScript Mixins`, () => {
         expect(result).to.be.equals(`Hello World!`);
     });
 
-    //recursive call mixin method
+    it(`Should return true, when checking main class is instance of super class.`, () => {
+        interface MixinOwnerRewrites {
+            someMethod(): string;
+        }
+
+        class MainMixin implements Mixin<MixinOwnerRewrites>, MixinOwnerRewrites {
+            public rewrites!: MixinOwnerRewrites;
+            public owner!: {} & MixinOwnerRewrites;
+            
+            @Rewrite()
+            public someMethod(): string {
+                return `Hello World`;
+            }
+        }
+
+        class SuperClass {
+
+        }
+
+        @Use(MainMixin)
+        class MainClass extends Extend<MainMixin>(SuperClass) {
+
+        }
+
+        const result = new MainClass() instanceof SuperClass;
+        expect(result).to.be.true;
+    });
+
+    it(`Should return false, when checking main class is instance of main mixin class.`, () => {
+        interface MixinOwnerRewrites {
+            someMethod(): string;
+        }
+
+        class MainMixin implements Mixin<MixinOwnerRewrites>, MixinOwnerRewrites {
+            public rewrites!: MixinOwnerRewrites;
+            public owner!: {} & MixinOwnerRewrites;
+            
+            @Rewrite()
+            public someMethod(): string {
+                return `Hello World`;
+            }
+        }
+
+        class SuperClass {
+
+        }
+
+        @Use(MainMixin)
+        class MainClass extends Extend<MainMixin>(SuperClass) {
+
+        }
+
+        const result = new MainClass() instanceof MainMixin;
+        expect(result).to.be.false;
+    });
+
+    //recursive call mixin method + czy this.owner.method === this.method?
 
     //properties
     //properties as setters/getters
