@@ -17,8 +17,21 @@ export default class Use {
             }
         };
 
-        for(const methodToRewrite of this.rewritesCollection.getByKey(mixinClass.prototype)) {
-            mixinRewrites.prototype[methodToRewrite] = mixin[methodToRewrite].bind(mixin);
+        for(const thingNameToRewrite of this.rewritesCollection.getByKey(mixinClass.prototype)) {
+            Object.defineProperty(mixinRewrites.prototype, thingNameToRewrite, {
+                get: () => {
+                    if(typeof mixin[thingNameToRewrite] === "function") {
+                        return (...args: Array<unknown>) => {
+                            return mixin[thingNameToRewrite](args);
+                        };
+                    } else {
+                        return mixin[thingNameToRewrite];
+                    }
+                },
+                set: (value: unknown) => {
+                    mixin[thingNameToRewrite] = value;
+                },
+            });
         }
 
         Object.setPrototypeOf(constructor, mixinRewrites);

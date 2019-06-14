@@ -231,7 +231,7 @@ describe(`TypeScript Mixins`, () => {
             
             @Rewrite()
             public someMethod(): string {
-                return `Hello World`;
+                return `Hello World!`;
             }
         }
 
@@ -249,6 +249,88 @@ describe(`TypeScript Mixins`, () => {
     });
 
     //recursive call mixin method + czy this.owner.method === this.method?
+
+    it(``, () => {
+        interface MixinOwnerRewrites {
+            someProperty: string;
+        }
+
+        class MainMixin implements Mixin<MixinOwnerRewrites>, MixinOwnerRewrites {
+            public rewrites!: MixinOwnerRewrites;
+            public owner!: {} & MixinOwnerRewrites;
+            
+            @Rewrite()
+            public someProperty = `Hello World!`;
+        }
+
+        @Use(MainMixin)
+        class MainClass extends Extend<MainMixin>() {
+
+        }
+
+        const result = new MainClass().someProperty;
+        expect(result).to.be.equals(`Hello World!`);
+    });
+
+    it(``, () => {
+        interface MixinOwnerRewrites {
+            someProperty: string;
+            changeSomeProperty(): void;
+        }
+
+        class MainMixin implements Mixin<MixinOwnerRewrites>, MixinOwnerRewrites {
+            public rewrites!: MixinOwnerRewrites;
+            public owner!: {} & MixinOwnerRewrites;
+            
+            @Rewrite()
+            public someProperty = `Bye bye World :(`;
+
+            @Rewrite()
+            public changeSomeProperty(): void {
+                this.someProperty = `Hello World!`;
+            }
+        }
+
+        @Use(MainMixin)
+        class MainClass extends Extend<MainMixin>() {
+
+        }
+
+        const mainClass = new MainClass();
+        mainClass.changeSomeProperty();
+        const result = mainClass.someProperty;
+        expect(result).to.be.equals(`Hello World!`);
+    });
+
+    it(``, () => {
+        interface MixinOwnerRewrites {
+            someProperty: string;
+            changeSomeProperty(): void;
+        }
+
+        class MainMixin implements Mixin<MixinOwnerRewrites>, MixinOwnerRewrites {
+            public rewrites!: MixinOwnerRewrites;
+            public owner!: {} & MixinOwnerRewrites;
+            
+            @Rewrite()
+            public someProperty = `Bye bye World :(`;
+
+            @Rewrite()
+            public changeSomeProperty(): void {
+                this.owner.someProperty = `Hello World!`;
+            }
+        }
+
+        @Use(MainMixin)
+        class MainClass extends Extend<MainMixin>() {
+
+        }
+
+        const mainClass = new MainClass();
+        mainClass.changeSomeProperty();
+        const result = mainClass.someProperty;
+        expect(result).to.be.equals(`Hello World!`);
+    });
 
     //properties
     //properties as setters/getters
