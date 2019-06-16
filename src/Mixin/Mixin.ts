@@ -7,13 +7,13 @@ export default class Use {
 
     }
 
-    public use<Requirements, T extends Class<Requirements>>(constructor: T, mixinClass: Class<MixinI<Requirements>>) {
+    public use<Rewrites, Requirements, T extends Class<Requirements>>(constructor: T, mixinClass: Class<MixinI<Rewrites, Requirements>>) {
         const mixin = new mixinClass();
 
         const mixinRewrites = class extends Object.getPrototypeOf(constructor) {
             constructor(...args: any[]) {
                 super(...args);
-                mixin.owner = this as unknown as Requirements;
+                mixin.owner = this as unknown as Rewrites & Requirements;
             }
         };
 
