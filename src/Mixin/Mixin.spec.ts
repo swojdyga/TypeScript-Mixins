@@ -1,6 +1,9 @@
 import "mocha";
 import { expect } from "chai";
-import { Rewrite, Use, Mixin, Extend } from "./index";
+import Rewrite from "./decorators/Rewrite";
+import Use from "./decorators/Use";
+import Mixin from "./interfaces/Mixin";
+import Extend from "../ExtendWithMixin/Extend";
 
 describe(`TypeScript Mixins`, () => {
     it(`Should rewrite method from mixin to main class.`, () => {
@@ -119,7 +122,7 @@ describe(`TypeScript Mixins`, () => {
         }
 
         interface MixinOwnerRequirements {
-            requireMethod(): string;
+            requiredMethod(): string;
         }
 
         class MainMixin implements Mixin<MixinOwnerRewrites, MixinOwnerRequirements>, MixinOwnerRewrites {
@@ -128,20 +131,20 @@ describe(`TypeScript Mixins`, () => {
 
             @Rewrite()
             public mainMethod(): string {
-                return `${this.owner.requireMethod()} World!`;
+                return `${this.owner.requiredMethod()} World!`;
             }
         }
 
         @Use(MainMixin)
         class SuperClass extends Extend<MainMixin>() {
-            public requireMethod(): string {
+            public requiredMethod(): string {
                 return `Hel`;
             }
         }
 
         class MainClass extends Extend(SuperClass) {
-            public requireMethod(): string {
-                return `${super.requireMethod()}lo`;
+            public requiredMethod(): string {
+                return `${super.requiredMethod()}lo`;
             }
         }
 
@@ -250,7 +253,7 @@ describe(`TypeScript Mixins`, () => {
 
     //recursive call mixin method + czy this.owner.method === this.method?
 
-    it(``, () => {
+    it(`Should rewrite property from mixin to main class.`, () => {
         interface MixinOwnerRewrites {
             someProperty: string;
         }
@@ -272,7 +275,7 @@ describe(`TypeScript Mixins`, () => {
         expect(result).to.be.equals(`Hello World!`);
     });
 
-    it(``, () => {
+    it(`Should change property value in main class, when change it value in mixin.`, () => {
         interface MixinOwnerRewrites {
             someProperty: string;
             changeSomeProperty(): void;
@@ -332,7 +335,125 @@ describe(`TypeScript Mixins`, () => {
         expect(result).to.be.equals(`Hello World!`);
     });
 
+    // 
+    it(``, () => {
+        interface MixinOwnerRewrites {
+            setContent(content: string);
+            getContent(): string;
+        }
+
+        class MainMixin implements Mixin<MixinOwnerRewrites>, MixinOwnerRewrites {
+            public rewrites!: MixinOwnerRewrites;
+            public owner!: {} & MixinOwnerRewrites;
+
+            private content: string = "";
+
+            @Rewrite()
+            public setContent(content: string) {
+                this.content = content;
+            }
+
+            @Rewrite()
+            public getContent(): string {
+                return this.content;
+            }
+        }
+
+        @Use(MainMixin)
+        class MainClass extends Extend<MainMixin>() {
+
+        }
+
+        const firstMainClass = new MainClass();
+        const secondMainClass = new MainClass();
+
+        firstMainClass.setContent(`Hello World!`);
+        secondMainClass.setContent(`Bye bye World :(`);
+
+        const result = firstMainClass.getContent();
+        expect(result).to.be.equals(`Hello World!`);
+    });
+
+    it(`Should main class have access to method from main mixin parent class.`, () => {
+        interface BaseMixinRewrites {
+            methodFromBaseMixin(): string;
+        }
+
+        class BaseMixin implements Mixin<BaseMixinRewrites>, BaseMixinRewrites {
+            public rewrites!: BaseMixinRewrites;
+            public owner!: {} & BaseMixinRewrites;
+
+            @Rewrite()
+            public methodFromBaseMixin(): string {
+                return `Hello World!`;
+            }
+        }
+
+        interface MainMixinRewrites extends BaseMixinRewrites {
+            methodFromMainMixin(): string;
+        }
+
+        class MainMixin extends Extend(BaseMixin) implements Mixin<MainMixinRewrites>, MainMixinRewrites {
+            public rewrites!: MainMixinRewrites;
+            public owner!: & {} & MainMixinRewrites;
+
+            @Rewrite()
+            public methodFromMainMixin(): string {
+                return `Hello World!`;
+            }
+        }
+
+        @Use(MainMixin)
+        class MainClass extends Extend<MainMixin>() {
+
+        }
+
+        const mainClass = new MainClass();
+        const result = mainClass.methodFromBaseMixin();
+        expect(result).to.be.equals(`Hello World!`);
+    });
+
+    it(`Should main mixin have access to other mixin, which it use.`, () => {
+        interface BaseMixinRewrites {
+            methodFromBaseMixin(): string;
+        }
+
+        class BaseMixin implements Mixin<BaseMixinRewrites>, BaseMixinRewrites {
+            public rewrites!: BaseMixinRewrites;
+            public owner!: {} & BaseMixinRewrites;
+
+            @Rewrite()
+            public methodFromBaseMixin(): string {
+                return `Hello`;
+            }
+        }
+
+        interface MainMixinRewrites {
+            methodFromMainMixin(): string;
+        }
+
+        @Use(BaseMixin)
+        class MainMixin extends Extend<BaseMixin>() implements Mixin<MainMixinRewrites>, MainMixinRewrites {
+            public rewrites!: MainMixinRewrites;
+            public owner!: {} & MainMixinRewrites;
+
+            @Rewrite()
+            public methodFromMainMixin(): string {
+                return `${this.methodFromBaseMixin()} World!`;
+            }
+        }
+
+        @Use(MainMixin)
+        class MainClass extends Extend<MainMixin>() {
+
+        }
+
+        const mainClass = new MainClass();
+        const result = mainClass.methodFromMainMixin();
+        expect(result).to.be.equals(`Hello World!`);
+    });
+
     //properties
     //properties as setters/getters
-    //dynamic rewrites
+    //dynamic rewrites?
 });

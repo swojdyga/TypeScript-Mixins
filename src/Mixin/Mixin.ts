@@ -1,44 +1,68 @@
-import Collection from "./interfaces/Collection";
+import CollectionI from "./interfaces/Collection";
 import Class from "../Class/interfaces/Class";
 import MixinI from "./interfaces/Mixin";
+import Collection from "../Collection/Collection";
 
 export default class Use {
-    public constructor(public rewritesCollection: Collection) {
+    public constructor(public rewritesCollection: CollectionI) {
 
     }
 
     public use<Rewrites, Requirements, T extends Class<Requirements>>(constructor: T, mixinClass: Class<MixinI<Rewrites, Requirements>>) {
-        const mixin = new mixinClass();
+        const rewritesCollection = this.rewritesCollection;
+        const mixinCollection = new Collection();
 
         const mixinRewrites = class extends Object.getPrototypeOf(constructor) {
             constructor(...args: any[]) {
                 super(...args);
-                mixin.owner = this as unknown as Rewrites & Requirements;
+
+                mixinCollection.set([this, mixinClass], new mixinClass());
+                mixinCollection.get([this, mixinClass]).owner = this as unknown as Rewrites & Requirements;
             }
         };
 
-        for(const thingNameToRewrite of this.rewritesCollection.getByKey(mixinClass.prototype)) {
+        for(const thingNameToRewrite of this.getRewritesByMixinClass(mixinClass)) {
             Object.defineProperty(mixinRewrites.prototype, thingNameToRewrite, {
-                get: () => {
-                    if(typeof mixin[thingNameToRewrite] === "function") {
+                get: function() {
+                    if(typeof mixinCollection.get([this, mixinClass])[thingNameToRewrite] === "function") {
                         return (...args: Array<unknown>) => {
-                            return mixin[thingNameToRewrite](args);
+                            return mixinCollection.get([this, mixinClass])[thingNameToRewrite](...args);
                         };
                     } else {
-                        return mixin[thingNameToRewrite];
+                        return mixinCollection.get([this, mixinClass])[thingNameToRewrite];
                     }
                 },
-                set: (value: unknown) => {
-                    mixin[thingNameToRewrite] = value;
+                set: function(value: unknown) {
+                    mixinCollection.get([this, mixinClass])[thingNameToRewrite] = value;
                 },
             });
         }
-
+        
         Object.setPrototypeOf(constructor, mixinRewrites);
         Object.setPrototypeOf(constructor.prototype, mixinRewrites.prototype);
     }
 
     public rewrite<Rewrites, T extends MixinI<Rewrites>>(target: T, property: keyof Rewrites & string): void {
-        return this.rewritesCollection.add(target, [property]);
+        if(this.rewritesCollection.get(target) === false) {
+            this.rewritesCollection.set(target, []);
+        }
+
+        this.rewritesCollection.get(target).push(property);
+    }
+
+    protected getRewritesByMixinClass<Rewrites, Requirements>(mixinClass: Class<MixinI<Rewrites, Requirements>>): string[] {
+        const rewrites: string[] = [];
+
+        let mixin = mixinClass;
+        do {
+            const mixinRewrites = this.rewritesCollection.get(mixin.prototype);
+            if(Array.isArray(mixinRewrites)) {
+                rewrites.push(...mixinRewrites);
+            }
+
+            mixin = Object.getPrototypeOf(mixin);
+        } while(mixin);
+
+        return rewrites;
     }
 }
