@@ -1,29 +1,28 @@
 export default class Collection {
-    private static readonly collection: any[][] = [];
-    private static readonly collectionKeys: any[][] = [];
+    private static readonly collection: any[] = [];
+    private static readonly collectionKeys: any[] = [];
 
-    public add(key: any, value: any[]): void {
-        const collectionKey = this.getCollectionKeyByKey(key);
-        this.createCollectionIfShould(collectionKey);
-        this.collection[collectionKey].push(...value);
+    public set(key: any, value: any): void {
+        const collectionKey = this.getCollectionKey(key);
+        this.collection[collectionKey] = value;
     }
 
-    public getByKey(key: any): any[] {
-        const collectionKey = this.getCollectionKeyByKey(key);
+    public get(key: any): any | false {
+        const collectionKey = this.getCollectionKey(key);
         const value = this.collection[collectionKey];
 
         if(typeof value === "undefined") {
-            return [];
+            return false;
         }
 
         return value;
     }
 
-    private getCollectionKeyByKey(key: any): number {
+    private getCollectionKey(key: any): number {
         for(const collectionKey in this.collectionKeys) {
-            if(this.collectionKeys[collectionKey] === key) {
+            if(this.isSameKey(this.collectionKeys[collectionKey], key)) {//
                 // I do not why collectionKey is typeof "string",
-                // when declaration of collectionKeys is just two-dimensional array...
+                // when declaration of collectionKeys is just array...
                 return collectionKey as unknown as number;
             }
         }
@@ -36,10 +35,18 @@ export default class Collection {
         return Collection.collectionKeys;
     }
 
-    private createCollectionIfShould(collectionKey: number): void {
-        if(typeof this.collection[collectionKey] === "undefined") {
-            this.collection[collectionKey] = [];
+    private isSameKey(keyA: any, keyB: any): boolean {
+        if(Array.isArray(keyA) && Array.isArray(keyB)) {
+            for(const key in keyA) {
+                if(!this.isSameKey(keyA[key], keyB[key])) {
+                    return false;
+                }
+            }
+
+            return true;
         }
+
+        return keyA === keyB;
     }
 
     private get collection() {
