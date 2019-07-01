@@ -275,6 +275,37 @@ describe(`TypeScript Mixins`, () => {
         expect(result).to.be.equals(`Hello World!`);
     });
 
+    it(`Should can change property value in main class, which was rewrite from mixin.`, () => {
+        interface MainMixinRewrites {
+            propertyFromMainMixin: string;
+            changePropertyInMainMixin(): void;
+        }
+
+        class MainMixin implements Mixin<MainMixinRewrites>, MainMixinRewrites {
+            public rewrites!: MainMixinRewrites;
+            public owner!: {} & MainMixinRewrites;
+
+            @Rewrite()
+            public propertyFromMainMixin: string = `Bye bye World :(`;
+
+            @Rewrite()
+            public changePropertyInMainMixin(): void {
+                this.propertyFromMainMixin = `Hello World!`;
+            }
+        }
+
+        @Use(MainMixin)
+        class MainClass extends Extend<MainMixin>() {
+
+        }
+
+        const mainClass = new MainClass();
+        mainClass.changePropertyInMainMixin();
+
+        const result = mainClass.propertyFromMainMixin;
+        expect(result).to.be.equals(`Hello World!`);
+    });
+
     it(`Should change property value in main class, when change it value in mixin.`, () => {
         interface MixinOwnerRewrites {
             someProperty: string;
@@ -302,6 +333,39 @@ describe(`TypeScript Mixins`, () => {
         const mainClass = new MainClass();
         mainClass.changeSomeProperty();
         const result = mainClass.someProperty;
+        expect(result).to.be.equals(`Hello World!`);
+    });
+
+    it(`Should change rewrites from mixin property value in mixin, when change it property value in main class.`, () => {
+        interface MainMixinRewrites {
+            propertyFromMainMixin: string;
+            getPropertyFromMainMixin: () => string;
+        }
+
+        class MainMixin implements Mixin<MainMixinRewrites>, MainMixinRewrites {
+            public rewrites!: MainMixinRewrites;
+            public owner!: {} & MainMixinRewrites;
+
+            @Rewrite()
+            public propertyFromMainMixin: string = `Bye bye World :(`;
+
+            @Rewrite()
+            public getPropertyFromMainMixin(): string {
+                return this.propertyFromMainMixin;
+            }
+        }
+
+        @Use(MainMixin)
+        class MainClass extends Extend<MainMixin>() {
+            public changePropertyInMainClass(): void {
+                this.propertyFromMainMixin = `Hello World!`;
+            }
+        }
+
+        const mainClass = new MainClass();
+        mainClass.changePropertyInMainClass();
+
+        const result = mainClass.getPropertyFromMainMixin();
         expect(result).to.be.equals(`Hello World!`);
     });
 
@@ -335,7 +399,6 @@ describe(`TypeScript Mixins`, () => {
         expect(result).to.be.equals(`Hello World!`);
     });
 
-    // 
     it(``, () => {
         interface MixinOwnerRewrites {
             setContent(content: string);
@@ -453,7 +516,6 @@ describe(`TypeScript Mixins`, () => {
         expect(result).to.be.equals(`Hello World!`);
     });
 
-    //properties
     //properties as setters/getters
     //dynamic rewrites?
 });
