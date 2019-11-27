@@ -3,7 +3,7 @@ import Class from "../Class/interfaces/Class";
 import MixinI from "./interfaces/Mixin";
 import Collection from "../Collection/Collection";
 
-export default class Use {
+export default class Mixin {
     public constructor(public rewritesCollection: CollectionI) {
 
     }
