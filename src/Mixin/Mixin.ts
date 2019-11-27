@@ -9,9 +9,7 @@ export default class Mixin {
     }
 
     public use<Rewrites, Requirements, T extends Class<Requirements>>(constructor: T, mixinClass: Class<MixinI<Rewrites, Requirements>>) {
-        const rewritesCollection = this.rewritesCollection;
         const mixinCollection = new Collection();
-
         const mixinRewrites = class extends Object.getPrototypeOf(constructor) {
             constructor(...args: any[]) {
                 super(...args);
