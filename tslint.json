@@ -21,7 +21,8 @@
         "interface-name": [true, "never-prefix"],
         "ban-types": false,
         "no-bitwise": false,
-        "max-classes-per-file": [true, 1, "exclude-class-expressions"]
+        "max-classes-per-file": [true, 1, "exclude-class-expressions"],
+        "object-literal-shorthand": false
     },
     "rulesDirectory": [],
     "linterOptions": {

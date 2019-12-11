@@ -1,9 +1,11 @@
 import "mocha";
 import { expect } from "chai";
-import Rewrite from "./decorators/Rewrite";
-import Use from "./decorators/Use";
-import Mixin from "./interfaces/Mixin";
-import Extend from "../ExtendWithMixin/Extend";
+import {
+    Rewrite,
+    Use,
+    Mixin,
+    ExtendWithMixin,
+} from "./index";
 
 describe(`TypeScript Mixins`, () => {
     it(`Should rewrite method from mixin to main class.`, () => {
@@ -22,7 +24,7 @@ describe(`TypeScript Mixins`, () => {
         }
 
         @Use(MainMixin)
-        class MainClass extends Extend<MainMixin>() {
+        class MainClass extends ExtendWithMixin<MainMixin>() {
 
         }
 
@@ -50,7 +52,7 @@ describe(`TypeScript Mixins`, () => {
         }
 
         @Use(MainMixin)
-        class MainClass extends Extend<MainMixin>() {
+        class MainClass extends ExtendWithMixin<MainMixin>() {
             public ownerMethod(): string {
                 return `World!`;
             }
@@ -76,7 +78,7 @@ describe(`TypeScript Mixins`, () => {
         }
 
         @Use(MainMixin)
-        class MainClass extends Extend<MainMixin>() {
+        class MainClass extends ExtendWithMixin<MainMixin>() {
             public someMethod(): string {
                 return `${super.someMethod()} World!`;
             }
@@ -102,11 +104,11 @@ describe(`TypeScript Mixins`, () => {
         }
 
         @Use(MainMixin)
-        class SuperClass extends Extend<MainMixin>() {
+        class SuperClass extends ExtendWithMixin<MainMixin>() {
 
         }
 
-        class MainClass extends Extend(SuperClass) {
+        class MainClass extends ExtendWithMixin(SuperClass) {
             public mainMethod(): string {
                 return `${super.mainMethod()} World!`;
             }
@@ -136,13 +138,13 @@ describe(`TypeScript Mixins`, () => {
         }
 
         @Use(MainMixin)
-        class SuperClass extends Extend<MainMixin>() {
+        class SuperClass extends ExtendWithMixin<MainMixin>() {
             public requiredMethod(): string {
                 return `Hel`;
             }
         }
 
-        class MainClass extends Extend(SuperClass) {
+        class MainClass extends ExtendWithMixin(SuperClass) {
             public requiredMethod(): string {
                 return `${super.requiredMethod()}lo`;
             }
@@ -187,7 +189,7 @@ describe(`TypeScript Mixins`, () => {
 
         @Use(MainMixin)
         @Use(SecondMixin)
-        class MainClass extends Extend<MainMixin & SecondMixin>() {
+        class MainClass extends ExtendWithMixin<MainMixin & SecondMixin>() {
 
         }
 
@@ -215,7 +217,7 @@ describe(`TypeScript Mixins`, () => {
         }
 
         @Use(MainMixin)
-        class MainClass extends Extend<MainMixin>(SuperClass) {
+        class MainClass extends ExtendWithMixin<MainMixin>(SuperClass) {
 
         }
 
@@ -243,7 +245,7 @@ describe(`TypeScript Mixins`, () => {
         }
 
         @Use(MainMixin)
-        class MainClass extends Extend<MainMixin>(SuperClass) {
+        class MainClass extends ExtendWithMixin<MainMixin>(SuperClass) {
 
         }
 
@@ -267,7 +269,7 @@ describe(`TypeScript Mixins`, () => {
         }
 
         @Use(MainMixin)
-        class MainClass extends Extend<MainMixin>() {
+        class MainClass extends ExtendWithMixin<MainMixin>() {
 
         }
 
@@ -295,7 +297,7 @@ describe(`TypeScript Mixins`, () => {
         }
 
         @Use(MainMixin)
-        class MainClass extends Extend<MainMixin>() {
+        class MainClass extends ExtendWithMixin<MainMixin>() {
 
         }
 
@@ -326,7 +328,7 @@ describe(`TypeScript Mixins`, () => {
         }
 
         @Use(MainMixin)
-        class MainClass extends Extend<MainMixin>() {
+        class MainClass extends ExtendWithMixin<MainMixin>() {
 
         }
 
@@ -356,7 +358,7 @@ describe(`TypeScript Mixins`, () => {
         }
 
         @Use(MainMixin)
-        class MainClass extends Extend<MainMixin>() {
+        class MainClass extends ExtendWithMixin<MainMixin>() {
             public changePropertyInMainClass(): void {
                 this.propertyFromMainMixin = `Hello World!`;
             }
@@ -389,7 +391,7 @@ describe(`TypeScript Mixins`, () => {
         }
 
         @Use(MainMixin)
-        class MainClass extends Extend<MainMixin>() {
+        class MainClass extends ExtendWithMixin<MainMixin>() {
 
         }
 
@@ -423,7 +425,7 @@ describe(`TypeScript Mixins`, () => {
         }
 
         @Use(MainMixin)
-        class MainClass extends Extend<MainMixin>() {
+        class MainClass extends ExtendWithMixin<MainMixin>() {
 
         }
 
@@ -456,7 +458,7 @@ describe(`TypeScript Mixins`, () => {
             methodFromMainMixin(): string;
         }
 
-        class MainMixin extends Extend(BaseMixin) implements Mixin<MainMixinRewrites>, MainMixinRewrites {
+        class MainMixin extends ExtendWithMixin(BaseMixin) implements Mixin<MainMixinRewrites>, MainMixinRewrites {
             public rewrites!: MainMixinRewrites;
             public owner!: & {} & MainMixinRewrites;
 
@@ -467,7 +469,7 @@ describe(`TypeScript Mixins`, () => {
         }
 
         @Use(MainMixin)
-        class MainClass extends Extend<MainMixin>() {
+        class MainClass extends ExtendWithMixin<MainMixin>() {
 
         }
 
@@ -496,7 +498,7 @@ describe(`TypeScript Mixins`, () => {
         }
 
         @Use(BaseMixin)
-        class MainMixin extends Extend<BaseMixin>() implements Mixin<MainMixinRewrites>, MainMixinRewrites {
+        class MainMixin extends ExtendWithMixin<BaseMixin>() implements Mixin<MainMixinRewrites>, MainMixinRewrites {
             public rewrites!: MainMixinRewrites;
             public owner!: {} & MainMixinRewrites;
 
@@ -507,7 +509,7 @@ describe(`TypeScript Mixins`, () => {
         }
 
         @Use(MainMixin)
-        class MainClass extends Extend<MainMixin>() {
+        class MainClass extends ExtendWithMixin<MainMixin>() {
 
         }
 
