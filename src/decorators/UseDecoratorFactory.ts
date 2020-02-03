@@ -1,6 +1,6 @@
-import Class from "../Class/interfaces/Class";
 import MixinsResolver from "../MixinsResolver";
 import { Mixin } from "../interfaces";
+import { Class } from "typescript-class-types";
 
 export default function UseDecoratorFactory(factory: MixinsResolver) {
     return function Use<
