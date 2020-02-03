@@ -1,5 +1,6 @@
-import Class from "./Class/interfaces/Class";
-import { Mixin } from "./interfaces";
+
+import { Mixin } from "../interfaces";
+import { Class } from "typescript-class-types";
 
 export default class MixinsResolver {
     public constructor(public rewritesCollection: WeakMap<Mixin<any, any>, string[]>) {
