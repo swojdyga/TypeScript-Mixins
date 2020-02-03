@@ -1,7 +1,7 @@
 {
-  "name": "basic-typescript-node-module-project",
-  "version": "1.0.0",
-  "description": "Basic TypeScript Node Module Project",
+  "name": "typescript-mixins",
+  "version": "0.0.1-alpha",
+  "description": "TypeScript Mixins",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
