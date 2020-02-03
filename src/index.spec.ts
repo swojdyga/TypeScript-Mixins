@@ -518,6 +518,61 @@ describe(`TypeScript Mixins`, () => {
         expect(result).to.be.equals(`Hello World!`);
     });
 
+    it(`--mixin generic type`, () => {
+        interface MainMixinRewrites<T> {
+            methodFromMainMixin(): T;
+        }
+
+        class MainMixin<T> implements Mixin<MainMixinRewrites<T>> {
+            public rewrites!: MainMixinRewrites<T>;
+            public owner!: {} & MainMixinRewrites<T>;
+
+            @Rewrite()
+            public methodFromMainMixin(): T {
+                return `Hello World!` as unknown as T;
+            }
+        }
+
+        @Use(MainMixin)
+        class MainClass extends ExtendWithMixin<MainMixin<string>>() {
+
+        }
+
+        const mainClass = new MainClass();
+        const result = mainClass.methodFromMainMixin();
+        expect(result).to.be.equals(`Hello World!`);
+    });
+
+    it(`--mixin generic type with class generic type`, () => {
+        interface MainMixinRewrites<T> {
+            methodFromMainMixin(): T;
+        }
+
+        class MainMixin<T> implements Mixin<MainMixinRewrites<T>> {
+            public rewrites!: MainMixinRewrites<T>;
+            public owner!: {} & MainMixinRewrites<T>;
+
+            @Rewrite()
+            public methodFromMainMixin(): T {
+                return `Hello World!` as unknown as T;
+            }
+        }
+
+        class MainClassMixins<T> {}
+        interface MainClassMixins<T> extends MainMixin<T> {}
+
+        @Use(MainMixin)
+        class MainClass<T> extends MainClassMixins<T> {
+
+        }
+
+        const mainClass = new MainClass<string>();
+        const result = mainClass.methodFromMainMixin();
+        expect(result).to.be.equals(`Hello World!`);
+    });
+
+    //extends base class generic type
+
     //properties as setters/getters
     //dynamic rewrites?
 });
