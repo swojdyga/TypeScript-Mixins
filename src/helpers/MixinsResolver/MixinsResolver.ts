@@ -1,5 +1,5 @@
 
-import { Mixin } from "../interfaces";
+import { Mixin } from "../../interfaces";
 import { Class } from "typescript-class-types";
 
 export default class MixinsResolver {

@@ -1,5 +1,3 @@
-import MixinsResolver from "./MixinsResolver";
-
-export {
-    MixinsResolver,
-};
+export * from "./Extend";
+export * from "./ExtendWithMixin";
+export * from "./MixinsResolver";

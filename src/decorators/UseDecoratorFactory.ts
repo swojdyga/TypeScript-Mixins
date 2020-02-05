@@ -1,4 +1,4 @@
-import MixinsResolver from "../helpers/MixinsResolver";
+import { MixinsResolver } from "../helpers/MixinsResolver";
 import { Mixin } from "../interfaces";
 import { Class } from "typescript-class-types";
 

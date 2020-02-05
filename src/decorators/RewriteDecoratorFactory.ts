@@ -1,4 +1,4 @@
-import MixinsResolver from "../helpers/MixinsResolver";
+import { MixinsResolver } from "../helpers/MixinsResolver";
 import { Mixin } from "../interfaces";
 
 export default function RewriteDecoratorFactory(factory: MixinsResolver) {
