@@ -6,10 +6,12 @@
             "es2015"
         ],
         "strictNullChecks": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "declaration": true,
+        "declarationDir": "build",
+        "outDir": "build"
     },
     "include": [
         "src/index.ts"
-    ],
-    "outDir": "build"
+    ]
 }

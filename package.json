@@ -5,8 +5,10 @@
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
-    "build": "(webpack --mode=production && npm run test) || rimraf -r build/index.js && rimraf -r build index.d.ts"
+    "build": "tsc || rimraf -r build/*",
+    "main": "npm run lint && npm run test && npm run build"
   },
   "author": "Sebastian Wojdyga",
   "license": "ISC",
@@ -23,9 +25,6 @@
     "tslint": "^5.20.1",
     "tslint-loader": "^3.5.4",
     "typescript": "^3.7.3",
-    "typescript-class-types": "^1.0.4",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10",
-    "webpack-node-externals": "^1.7.2"
+    "typescript-class-types": "^1.0.4"
   }
 }
