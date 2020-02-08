@@ -12,7 +12,9 @@
   },
   "author": "Sebastian Wojdyga",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "typescript-class-types": "^1.0.5"
+  },
   "devDependencies": {
     "@types/chai": "^4.2.7",
     "@types/mocha": "^5.2.7",
@@ -24,7 +26,6 @@
     "ts-node": "^7.0.1",
     "tslint": "^5.20.1",
     "tslint-loader": "^3.5.4",
-    "typescript": "^3.7.3",
-    "typescript-class-types": "^1.0.4"
+    "typescript": "^3.7.3"
   }
 }
