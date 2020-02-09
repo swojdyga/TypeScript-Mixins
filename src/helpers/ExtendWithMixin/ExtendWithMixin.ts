@@ -1,5 +1,5 @@
 import BaseExtend from "../Extend/Extend";
-import { Mixin } from "../../interfaces";
+import { Mixin } from "../../interfaces/index";
 import { Class, AbstractClass } from "typescript-class-types";
 
 type MixinRewrites<T extends Mixin<{}>> = T extends Mixin<infer U> ? U : never;

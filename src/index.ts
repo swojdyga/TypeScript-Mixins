@@ -1,6 +1,6 @@
-import { MixinsResolver } from "./helpers";
-import { Mixin } from "./interfaces";
-import { RewriteDecoratorFactory, UseDecoratorFactory } from "./decorators";
+import { MixinsResolver } from "./helpers/index";
+import { Mixin } from "./interfaces/index";
+import { RewriteDecoratorFactory, UseDecoratorFactory } from "./decorators/index";
 
 const mixinsResolverInstance = new MixinsResolver(
     new WeakMap<
@@ -18,6 +18,6 @@ export {
     Use,
 };
 
-export * from "./decorators";
-export * from "./interfaces";
-export * from "./helpers";
+export * from "./decorators/index";
+export * from "./interfaces/index";
+export * from "./helpers/index";
