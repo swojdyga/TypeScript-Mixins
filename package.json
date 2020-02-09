@@ -1,19 +1,19 @@
 {
   "name": "typescript-mixins",
-  "version": "0.0.1-alpha-3",
+  "version": "0.0.1-alpha-4",
   "description": "TypeScript Mixins",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
-    "build": "tsc || rimraf -r build/*",
+    "build": "(rimraf -r build/* && tsc) || rimraf -r build/*",
     "main": "npm run lint && npm run test && npm run build"
   },
   "author": "Sebastian Wojdyga",
   "license": "ISC",
   "dependencies": {
-    "typescript-class-types": "^1.0.7"
+    "typescript-class-types": "^1.0.11"
   },
   "devDependencies": {
     "@types/chai": "^4.2.7",
